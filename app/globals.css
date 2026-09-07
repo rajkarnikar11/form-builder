@@ -23,3 +23,43 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.nester:has(.nested .field-header) {
+  @apply border-l border-teal-900;
+
+}
+
+.field-header {
+  position: relative;
+
+  &::after {
+    content: " ";
+    position: absolute;
+    left: 0;
+    height: 100%;
+    width: 2px;
+    top: 0;
+    border-radius: 8px 0 0 8px;
+    @apply bg-teal-900;
+  }
+}
+
+
+
+.nested {
+  .field-header {
+    position: relative;
+
+    &::before {
+      content: ' ';
+      height: 1px;
+      width: 16px;
+      position: absolute;
+      transform: translateX(-150%);
+      top: 20px;
+      right: full;
+
+      @apply bg-teal-900;
+    }
+  }
+}

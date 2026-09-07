@@ -22,8 +22,8 @@ const Formstructure = () => {
 
   return (
     <div>
-      <div className="flex justify-between my-4 relative">
-        <h6>Form structure</h6>
+      <div className="flex justify-between items-center border-b-2 border-teal-900 pb-4 my-4 relative">
+        <h6 className=' text-lg font-semibold text-teal-900'>Form structure</h6>
         <AddField isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
       <div className=' grid gap-2'>

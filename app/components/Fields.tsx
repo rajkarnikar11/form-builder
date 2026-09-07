@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { ChevronUp, ChevronDown, Trash } from 'lucide-react'
 import { Field, useFormStructure } from '../context/FormStructureContext';
 import AddField from './UI/AddField';
+import { Accordion } from './Accordion';
 
 interface FieldsProps {
     type: "number" | "text" | "group";
@@ -11,26 +12,28 @@ interface FieldsProps {
 interface BaseFieldProps {
     field: Field;
     index: number;
+    parentID?: string;
+
 }
 
-const BaseField = ({ field, index }: BaseFieldProps) => {
-    const { setFields } = useFormStructure();
+
+
+const BaseField = ({ field, index, parentID }: BaseFieldProps) => {
+    const { setFields, updateField } = useFormStructure();
+    const handleFieldChange = (key: keyof Field, value: string | number | boolean) => {
+        updateField(field.id, { [key]: value }, parentID);
+    };
 
     return (<div className=' flex flex-col'>
         <label className='text-sm text-gray-500'>label</label>
         <div className=' flex gap-2 items-center'>
-            <input onChange={(e) => setFields((prev: any) => prev.map((f: any, i: any) => (i === index ? { ...f, label: e.target.value } : f))
-            )} className='border border-gray-200 rounded p-1' value={field?.label}></input>
+            <input onChange={(e) => handleFieldChange('label', e.target.value)}
+                className='border border-gray-200 rounded p-1' value={field?.label}></input>
             <input
                 type="checkbox"
                 checked={field?.required ?? false}
-                onChange={(e) =>
-                    setFields((prev: any) =>
-                        prev.map((f: any, i: any) =>
-                            i === index ? { ...f, required: e.target.checked } : f
-                        )
-                    )
-                }
+                onChange={(e) => handleFieldChange('required', e.target.value)}
+
             /> <label> Required</label>
         </div>
 
@@ -44,10 +47,10 @@ const GroupField = ({ field, index }: BaseFieldProps) => {
     return (<div className=' '>
         <div className=' flex justify-end'><AddField isOpen={isOpen} parentID={field?.id} setIsOpen={setIsOpen} /></div>
 
-        <div >{field?.children?.map((item: Field) => <div className=' my-2 flex flex-col border border-gray-200 rounded-lg'>
+        <div className='nested' >{field?.children?.map((item: Field) => <div className=' my-2 flex flex-col border border-gray-200 rounded-lg'>
             <FieldHeader parentID={field?.id} id={item?.id} type={item?.type} index={index} />
 
-            {renderContent(item, index)}
+            {renderContent(item, index, item?.id, field?.id)}
         </div>)}</div>
 
     </div>
@@ -55,33 +58,32 @@ const GroupField = ({ field, index }: BaseFieldProps) => {
     );
 }
 
-const renderContent = (field: Field, index: number) => {
-    const { setFields } = useFormStructure();
+const renderContent = (field: Field, index: number, id: string, parentID?: string) => {
+    const { setFields, updateField } = useFormStructure();
 
-
+    const handleFieldChange = (key: keyof Field, value: string | number | boolean) => {
+        updateField(id, { [key]: value }, parentID);
+    };
 
 
     switch (field?.type) {
         case 'text':
             return (
                 <div className='flex p-2'>
-                    <BaseField field={field} index={index} />
+                    <BaseField parentID={parentID} field={field} index={index} />
                 </div>)
         case 'number':
             return (
                 <div className=' flex gap-2 flex-col p-2'>
-                    <BaseField field={field} index={index} />
+                    <BaseField parentID={parentID} field={field} index={index} />
                     <div className='flex gap-2'>
                         <div className='flex flex-col'>
                             <label className='text-sm text-gray-500'>min  (optional) </label>
                             <input
                                 type="number"
                                 value={field?.min ?? ""}
-                                onChange={(e) =>
-                                    setFields((prev: any) =>
-                                        prev.map((f: any, i: any) => (i === index ? { ...f, min: e.target.value } : f))
-                                    )
-                                }
+                                onChange={(e) => handleFieldChange('min', e.target.value)}
+
                                 className='border border-gray-200 rounded p-1'
                             />
                         </div>
@@ -90,11 +92,8 @@ const renderContent = (field: Field, index: number) => {
                             <input
                                 type="number"
                                 value={field?.max ?? ""}
-                                onChange={(e) =>
-                                    setFields((prev: any) =>
-                                        prev.map((f: any, i: any) => (i === index ? { ...f, max: e.target.value } : f))
-                                    )
-                                }
+                                onChange={(e) => handleFieldChange('max', e.target.value)}
+
                                 className='border border-gray-200 rounded p-1'
                             />
                         </div>
@@ -104,8 +103,8 @@ const renderContent = (field: Field, index: number) => {
 
         case 'group':
             return (
-                <div className='flex flex-col gap-2 p-2'>
-                    <BaseField field={field} index={index} />
+                <div className='flex flex-col nester gap-2 pl-4 p-2'>
+                    <BaseField parentID={parentID} field={field} index={index} />
                     <GroupField field={field} index={index} />
 
                 </div>)
@@ -117,7 +116,7 @@ const renderContent = (field: Field, index: number) => {
 const FieldHeader = ({ type, index, parentID, id }: { type: Field['type'], index: number, parentID?: string, id: string }) => {
     const { moveField, fields, removeField } = useFormStructure();
 
-    return (<div className='flex justify-between gap-4 border-gray-200 p-2 border-b'>
+    return (<div className='flex justify-between field-header gap-4 border-gray-200 p-2 border-b'>
         <p className='font-medium capitalize'>{type}</p>
         <div className=' flex gap-2'>
             <button
@@ -145,11 +144,13 @@ const Fields = ({ type, index, }: FieldsProps) => {
     const { fields } = useFormStructure();
 
     return (
-        <div className=' border border-gray-300 rounded-lg'>
-            <FieldHeader type={type} index={index} id={fields?.[index]?.id} />
-
-            <div>{renderContent(fields[index], index)}</div>
-        </div>
+        <Accordion
+            header={(isOpen: boolean) => (
+                <FieldHeader type={type} index={index} id={fields?.[index]?.id} />
+            )}
+        >
+            {renderContent(fields[index], index, fields?.[index]?.id)}
+        </Accordion>
     )
 }
 

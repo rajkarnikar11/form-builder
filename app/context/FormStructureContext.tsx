@@ -20,6 +20,7 @@ interface FormStructureContextType {
     removeField: (index: number, id: string, parentID?: string) => void;
     setFields: React.Dispatch<React.SetStateAction<Field[]>>;
     moveField: (index: number, direction: 'up' | 'down', id: string, parentID?: string) => void;
+    updateField: (id: string, updates: Partial<Field>, parentId?: string) => void;
 
 }
 
@@ -70,8 +71,42 @@ export function FormStructureProvider({ children }: { children: ReactNode }) {
 
     console.log(fields, 'fields')
 
+    const updateFieldInArray = (arr: Field[], id: string, updates: Partial<Field>): Field[] => {
+        return arr.map((f) => (f.id === id ? { ...f, ...updates } : f));
+    };
+
+    const updateFieldRecursive = (
+        fields: Field[],
+        id: string,
+        parentId: string,
+        updates: Partial<Field>
+    ): Field[] => {
+        return fields.map((field) => {
+            if (field.id === parentId) {
+                return {
+                    ...field,
+                    children: field.children ? updateFieldInArray(field.children, id, updates) : field.children,
+                };
+            }
+            if (field.children) {
+                return {
+                    ...field,
+                    children: updateFieldRecursive(field.children, id, parentId, updates),
+                };
+            }
+            return field;
+        });
+    };
+
+    const updateField = (id: string, updates: Partial<Field>, parentId?: string) => {
+        setFields((prev) => {
+            if (!parentId) return updateFieldInArray(prev, id, updates);
+            return updateFieldRecursive(prev, id, parentId, updates);
+        });
+    };
+
     return (
-        <FormStructureContext.Provider value={{ fields, addField, removeField, setFields, moveField }}>
+        <FormStructureContext.Provider value={{ fields, addField, removeField, setFields, moveField, updateField }}>
             {children}
         </FormStructureContext.Provider>
     );
