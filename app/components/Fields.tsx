@@ -13,12 +13,13 @@ interface BaseFieldProps {
     field: Field;
     index: number;
     parentID?: string;
+    required?: boolean;
 
 }
 
 
 
-const BaseField = ({ field, index, parentID }: BaseFieldProps) => {
+const BaseField = ({ required = true, field, index, parentID }: BaseFieldProps) => {
     const { setFields, updateField } = useFormStructure();
     const handleFieldChange = (key: keyof Field, value: string | number | boolean) => {
         updateField(field.id, { [key]: value }, parentID);
@@ -29,12 +30,12 @@ const BaseField = ({ field, index, parentID }: BaseFieldProps) => {
         <div className=' flex gap-2 items-center'>
             <input onChange={(e) => handleFieldChange('label', e.target.value)}
                 className='border border-gray-200 rounded p-1' value={field?.label}></input>
-            <input
+            {required ? <><input
                 type="checkbox"
                 checked={field?.required ?? false}
-                onChange={(e) => handleFieldChange('required', e.target.value)}
+                onChange={(e) => handleFieldChange('required', !field?.required)}
 
-            /> <label> Required</label>
+            /> <label> Required</label></> : <></>}
         </div>
 
     </div>);
@@ -103,7 +104,7 @@ const renderContent = (field: Field, index: number, id: string, parentID?: strin
         case 'group':
             return (
                 <div className='flex flex-col nester gap-2 pl-4 p-2'>
-                    <BaseField parentID={parentID} field={field} index={index} />
+                    <BaseField required={false} parentID={parentID} field={field} index={index} />
                     <GroupField field={field} index={index} />
 
                 </div>)
