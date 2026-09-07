@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ChevronUp, ChevronDown, Trash } from 'lucide-react'
 import { Field, useFormStructure } from '../context/FormStructureContext';
 import AddField from './UI/AddField';
-import { Accordion } from './Accordion';
+import { Accordion } from './UI/Accordion';
 
 interface FieldsProps {
     type: "number" | "text" | "group";

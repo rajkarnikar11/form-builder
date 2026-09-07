@@ -80,3 +80,8 @@ export const moveChildField = (
             : field
     );
 };
+
+
+export const toJson = (value: unknown, pretty: boolean = true): string => {
+    return JSON.stringify(value, null, pretty ? 2 : undefined);
+};
