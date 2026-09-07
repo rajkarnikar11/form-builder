@@ -63,7 +63,6 @@ export const moveChildField = (
 ): Field[] => {
     const index = fields.findIndex((f) => f.id === id);
 
-    console.log(fields, id, 'asdasd', index, 'ss', parentID)
 
     if (index !== -1) {
         const newIndex = direction === "up" ? index - 1 : index + 1;
@@ -84,4 +83,14 @@ export const moveChildField = (
 
 export const toJson = (value: unknown, pretty: boolean = true): string => {
     return JSON.stringify(value, null, pretty ? 2 : undefined);
+};
+
+
+export const isValidJson = (value: string): boolean => {
+    try {
+        const parsed = JSON.parse(value);
+        return typeof parsed === 'object' && parsed !== null;
+    } catch {
+        return false;
+    }
 };

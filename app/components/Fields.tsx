@@ -43,7 +43,6 @@ const BaseField = ({ field, index, parentID }: BaseFieldProps) => {
 const GroupField = ({ field, index }: BaseFieldProps) => {
     const { setFields } = useFormStructure();
     const [isOpen, setIsOpen] = useState(false);
-    console.log(field, 'inside group')
     return (<div className=' '>
         <div className=' flex justify-end'><AddField isOpen={isOpen} parentID={field?.id} setIsOpen={setIsOpen} /></div>
 

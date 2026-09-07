@@ -28,7 +28,6 @@ const Formstructure = () => {
       </div>
       {fields?.length ? <div className=' grid gap-2'>
         {fields?.map((field, index) => {
-          console.log(field);
           return <Fields type={field?.type} index={index} key={`${field?.id}`} />
         })}
       </div> : <div className='p-6 rounded-xl text-center border-2 border-teal-900 border-dashed'><p className='text-xl text-teal-900/50  font-semibold'>No fields yet. Add a text, number, or group field to get started.

@@ -57,7 +57,6 @@ export function FormStructureProvider({ children }: { children: ReactNode }) {
         }
 
         else {
-            console.log('else')
             setFields((prev) => {
                 const newIndex = direction === 'up' ? index - 1 : index + 1;
                 if (newIndex < 0 || newIndex >= prev.length) return prev;
@@ -69,7 +68,6 @@ export function FormStructureProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    console.log(fields, 'fields')
 
     const updateFieldInArray = (arr: Field[], id: string, updates: Partial<Field>): Field[] => {
         return arr.map((f) => (f.id === id ? { ...f, ...updates } : f));
