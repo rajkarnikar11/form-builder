@@ -52,14 +52,29 @@ body {
 
     &::before {
       content: ' ';
-      height: 1px;
-      width: 16px;
+      height: 2px;
+      width: 20px;
       position: absolute;
-      transform: translateX(-150%);
+      transform: translate(-30px, -50%);
       top: 20px;
       right: full;
 
       @apply bg-teal-900;
     }
+  }
+}
+
+
+.accordion-header-icon {
+  position: relative;
+
+  &:after {
+    content: " ";
+    height: 2px;
+    width: 10px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-100%, -50%);
+    @apply bg-teal-900
   }
 }

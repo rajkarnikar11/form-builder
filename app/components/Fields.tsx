@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ChevronUp, ChevronDown, Trash } from 'lucide-react'
+import { ChevronUp, ChevronDown, Trash, Minus, Plus } from 'lucide-react'
 import { Field, useFormStructure } from '../context/FormStructureContext';
 import AddField from './UI/AddField';
 import { Accordion } from './UI/Accordion';
@@ -48,9 +48,15 @@ const GroupField = ({ field, index }: BaseFieldProps) => {
         <div className=' flex justify-end'><AddField isOpen={isOpen} parentID={field?.id} setIsOpen={setIsOpen} /></div>
 
         <div className='nested' >{field?.children?.map((item: Field) => <div className=' my-2 flex flex-col border border-gray-200 rounded-lg'>
-            <FieldHeader parentID={field?.id} id={item?.id} type={item?.type} index={index} />
+            <Accordion
+                header={(isOpen: boolean) => (
+                    <FieldHeader parentID={field?.id} id={item?.id} type={item?.type} isOpen={isOpen} index={index} />
 
-            {renderContent(item, index, item?.id, field?.id)}
+                )}
+            >
+                {renderContent(item, index, item?.id, field?.id)}
+            </Accordion>
+
         </div>)}</div>
 
     </div>
@@ -113,15 +119,18 @@ const renderContent = (field: Field, index: number, id: string, parentID?: strin
 
 }
 
-const FieldHeader = ({ type, index, parentID, id }: { type: Field['type'], index: number, parentID?: string, id: string }) => {
+const FieldHeader = ({ type, index, parentID, id, isOpen }: { type: Field['type'], index: number, parentID?: string, id: string, isOpen: boolean }) => {
     const { moveField, fields, removeField } = useFormStructure();
 
     return (<div className='flex justify-between field-header gap-4 border-gray-200 p-2 border-b'>
-        <p className='font-medium capitalize'>{type}</p>
+        <div className=' flex gap-2 items-center'>
+            <span className=' bg-teal-900 accordion-header-icon text-white border-2 border-teal-900 rounded '>{isOpen ? <Minus strokeWidth={2} size={14} /> : <Plus strokeWidth={2} size={14} />}</span>
+            <p className='font-medium capitalize'>{type}</p>
+        </div>
         <div className=' flex gap-2'>
             <button
                 className='cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed'
-                onClick={() => moveField(index, 'up', id, parentID)}
+                onClick={(e) => { e.stopPropagation(); moveField(index, 'up', id, parentID) }}
             // disabled={index === 0}
             >
                 <ChevronUp />
@@ -129,7 +138,7 @@ const FieldHeader = ({ type, index, parentID, id }: { type: Field['type'], index
             <button
                 className='cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed'
 
-                onClick={() => moveField(index, 'down', id, parentID)}
+                onClick={(e) => { e.stopPropagation(); moveField(index, 'down', id, parentID) }}
             // disabled={index === fields.length - 1}
             >
                 <ChevronDown />
@@ -146,7 +155,7 @@ const Fields = ({ type, index, }: FieldsProps) => {
     return (
         <Accordion
             header={(isOpen: boolean) => (
-                <FieldHeader type={type} index={index} id={fields?.[index]?.id} />
+                <FieldHeader type={type} index={index} id={fields?.[index]?.id} isOpen={isOpen} />
             )}
         >
             {renderContent(fields[index], index, fields?.[index]?.id)}
