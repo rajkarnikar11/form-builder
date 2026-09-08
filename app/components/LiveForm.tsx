@@ -1,5 +1,5 @@
 'use client'
-import { Check, Code2, Copy, Import } from 'lucide-react'
+import { Check, Code2, Copy, Import, Loader2 } from 'lucide-react'
 import React, { useState } from 'react'
 import { Modal } from './UI/Modal'
 import { useFormStructure } from '../context/FormStructureContext'
@@ -14,15 +14,19 @@ const LiveForm = () => {
     const { fields, setFields } = useFormStructure();
 
     const [copied, setCopied] = useState(false);
+    const [copying, setCopying] = useState(false);
 
 
     const handleCopy = async () => {
+        setCopying(true);
         try {
             await navigator.clipboard.writeText(toJson(fields));
             setCopied(true);
-            setTimeout(() => setCopied(false), 5000);
+            setTimeout(() => setCopied(false), 2000);
         } catch (err) {
             console.error('Copy failed:', err);
+        } finally {
+            setCopying(false);
         }
     };
 
@@ -35,7 +39,7 @@ const LiveForm = () => {
         setOpenImportModal(false)
     }
     return (
-        <div className='  w-1/2'>
+        <div className=' border-l border-dashed border-teal-900 pl-4 h-full  w-1/2'>
             <div className="flex  justify-between items-center border-b-2 border-teal-900 pb-4 my-4 relative">
                 <h6 className=' text-lg font-semibold text-teal-900'>Live Form</h6>
                 <div className='flex text-sm gap-4'>
@@ -50,9 +54,16 @@ const LiveForm = () => {
             <Modal isOpen={openExportModal} onClose={() => setOpenExportModal(false)} title="Export JSON">
                 <button
                     onClick={handleCopy}
-                    className='text-xs cursor-pointer px-2 mb-2 py-1 rounded bg-teal-900/20 hover:bg-teal-900/30'
+                    disabled={copying}
+                    className='text-xs cursor-pointer px-2 mb-2 py-1 rounded bg-teal-900/20 hover:bg-teal-900/30 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
-                    {copied ? <div className='flex items-center gap-1'> <Check size={12} /> Copied</div> : <div className='flex items-center gap-1'> <Copy size={12} /> Copy</div>}
+                    {copying ? (
+                        <div className='flex items-center gap-1'><Loader2 size={12} className='animate-spin' /> Copying</div>
+                    ) : copied ? (
+                        <div className='flex items-center gap-1'><Check size={12} /> Copied</div>
+                    ) : (
+                        <div className='flex items-center gap-1'><Copy size={12} /> Copy</div>
+                    )}
                 </button>
                 <div className='p-2 rounded-lg max-h-[60vh] overflow-y-auto bg-teal-900/10'>
                     <pre className='font-mono text-xs whitespace-pre-wrap break-words'>

@@ -24,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col"><FormStructureProvider>{children}</FormStructureProvider>
+      <body className=" h-[calc(100vh-100px)] flex  flex-col"><FormStructureProvider>{children}</FormStructureProvider>
       </body>
     </html>
   );
