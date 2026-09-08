@@ -17,10 +17,16 @@ interface BaseFieldProps {
 
 }
 
+interface FieldContentProps {
+    field: Field;
+    index: number;
+    id: string;
+    parentID?: string;
+}
 
 
 const BaseField = ({ required = true, field, index, parentID }: BaseFieldProps) => {
-    const { setFields, updateField } = useFormStructure();
+    const { updateField } = useFormStructure();
     const handleFieldChange = (key: keyof Field, value: string | number | boolean) => {
         updateField(field.id, { [key]: value }, parentID);
     };
@@ -42,7 +48,6 @@ const BaseField = ({ required = true, field, index, parentID }: BaseFieldProps) 
 }
 
 const GroupField = ({ field, index }: BaseFieldProps) => {
-    const { setFields } = useFormStructure();
     const [isOpen, setIsOpen] = useState(false);
     return (<div className=' '>
         <div className=' flex justify-end'><AddField isOpen={isOpen} parentID={field?.id} setIsOpen={setIsOpen} /></div>
@@ -54,7 +59,7 @@ const GroupField = ({ field, index }: BaseFieldProps) => {
 
                 )}
             >
-                {renderContent(item, index, item?.id, field?.id)}
+                <FieldContent field={item} index={index} id={item?.id} parentID={field?.id} />
             </Accordion>
 
         </div>)}</div>
@@ -64,8 +69,8 @@ const GroupField = ({ field, index }: BaseFieldProps) => {
     );
 }
 
-const renderContent = (field: Field, index: number, id: string, parentID?: string) => {
-    const { setFields, updateField } = useFormStructure();
+const FieldContent = ({ field, index, id, parentID }: FieldContentProps) => {
+    const { updateField } = useFormStructure();
 
     const handleFieldChange = (key: keyof Field, value: string | number | boolean) => {
         updateField(id, { [key]: value }, parentID);
@@ -114,6 +119,8 @@ const renderContent = (field: Field, index: number, id: string, parentID?: strin
                     <GroupField field={field} index={index} />
 
                 </div>)
+        default:
+            return null;
     }
 
 
@@ -158,7 +165,7 @@ const Fields = ({ type, index, }: FieldsProps) => {
                 <FieldHeader type={type} index={index} id={fields?.[index]?.id} isOpen={isOpen} />
             )}
         >
-            {renderContent(fields[index], index, fields?.[index]?.id)}
+            <FieldContent field={fields[index]} index={index} id={fields?.[index]?.id} />
         </Accordion>
     )
 }
