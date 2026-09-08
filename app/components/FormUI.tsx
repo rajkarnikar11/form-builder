@@ -29,11 +29,12 @@ const FormUI = () => {
 
     if (fields?.length) {
         return (
-            <div><div className=' border flex flex-col gap-4 border-gray-200 rounded-lg p-4'>
-                {fields?.map((field: Field) => {
-                    return <Inputs inputError={error} path={[field.label]} field={field} />
-                })}
-            </div>
+            <div className='p-4 rounded-lg bg-teal-900/2 shadow-lg'>
+                <div className=' border flex flex-col gap-4 border-gray-200 rounded-lg p-4'>
+                    {fields?.map((field: Field) => {
+                        return <Inputs inputError={error} path={[field.label]} field={field} />
+                    })}
+                </div>
                 <div className=' flex justify-end mt-2'>
                     <button onClick={() => handleSubmit()} className=' rounded-lg bg-teal-900 text-gray-50 cursor-pointer py-2 px-4'>submit</button>
                 </div>
