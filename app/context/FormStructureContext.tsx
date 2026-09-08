@@ -1,7 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { addChildToField, findFieldById, moveChildField, removeChildFromField } from '../utils/helpers';
+import Fields from '../components/Fields';
+import { clearValues } from '../formState/formValues';
 
 export interface Field {
     id: string;
@@ -103,12 +105,16 @@ export function FormStructureProvider({ children }: { children: ReactNode }) {
         });
     };
 
+
+
     return (
         <FormStructureContext.Provider value={{ fields, addField, removeField, setFields, moveField, updateField }}>
             {children}
         </FormStructureContext.Provider>
     );
 }
+
+
 
 export function useFormStructure() {
     const context = useContext(FormStructureContext);

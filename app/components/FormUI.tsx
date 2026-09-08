@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Field, useFormStructure } from '../context/FormStructureContext';
 import Inputs from './Inputs';
 import { clearValues, getAllValues } from '../formState/formValues';
@@ -8,15 +8,30 @@ const FormUI = () => {
 
     const { fields, } = useFormStructure();
 
+    const [error, setError] = useState<Record<string, string>>({})
+
+    // useEffect(() => {
+    //     console.log('field change');
+    //     clearValues()
+    // }, [fields])
+
     function handleSubmit() {
-        validateAll(fields)
+
+
+        setError(validateAll(fields)?.errors)
+        if (validateAll(fields)?.allValid) {
+            alert('Form submited succesfully');
+            console.log(getAllValues(), 'submitted succesfully!!!!!!!!!!!!')
+        }
+
+
     }
 
     if (fields?.length) {
         return (
             <div><div className=' border flex flex-col gap-4 border-gray-200 rounded-lg p-4'>
                 {fields?.map((field: Field) => {
-                    return <Inputs field={field} />
+                    return <Inputs inputError={error} path={[field.label]} field={field} />
                 })}
             </div>
                 <div className=' flex justify-end mt-2'>
