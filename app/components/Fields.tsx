@@ -47,7 +47,7 @@ const GroupField = ({ field, index }: BaseFieldProps) => {
     return (<div className=' '>
         <div className=' flex justify-end'><AddField isOpen={isOpen} parentID={field?.id} setIsOpen={setIsOpen} /></div>
 
-        <div className='nested' >{field?.children?.map((item: Field) => <div className=' my-2 flex flex-col border border-gray-200 rounded-lg'>
+        <div className='nested' >{field?.children?.map((item: Field) => <div key={item?.id} className=' my-2 flex flex-col border border-gray-200 rounded-lg'>
             <Accordion
                 header={(isOpen: boolean) => (
                     <FieldHeader parentID={field?.id} id={item?.id} type={item?.type} isOpen={isOpen} index={index} />

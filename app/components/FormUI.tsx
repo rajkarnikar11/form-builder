@@ -23,7 +23,7 @@ const FormUI = () => {
             alert(
                 'Form submitted successfully! 🎉\n\n' +
                 'Looks like we’re off to a good start — let’s work together! 🚀\n\n' +
-                JSON.stringify(fields, null, 2)
+                JSON.stringify(getAllValues(), null, 2)
             ); console.log(getAllValues(), 'submitted succesfully!!!!!!!!!!!!')
         }
 
