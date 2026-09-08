@@ -1,4 +1,4 @@
-import { useFormStructure } from '@/app/context/FormStructureContext';
+import { Field, useFormStructure } from '@/app/context/FormStructureContext';
 import { Plus } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -49,6 +49,20 @@ const AddField = ({ isOpen, setIsOpen, parentID }: AddFieldProps) => {
     const { fields, addField, removeField } = useFormStructure();
 
 
+    const getUniqueLabel = (baseLabel: string, existingFields: { label: string }[]) => {
+        const existingLabels = new Set(existingFields.map((f) => f.label));
+        console.log(existingLabels, 'here')
+        if (!existingLabels.has(baseLabel)) return baseLabel;
+
+        let counter = 1;
+        let candidate = `${baseLabel} ${counter}`;
+        while (existingLabels.has(candidate)) {
+            counter++;
+            candidate = `${baseLabel} ${counter}`;
+        }
+        return candidate;
+    };
+
     return (
         <div className="relative">
             <button ref={buttonRef} onClick={() => setIsOpen(!isOpen)} className="flex border border-teal-900 text-teal-900 rounded-lg p-2 cursor-pointer items-center gap-1">
@@ -66,7 +80,8 @@ const AddField = ({ isOpen, setIsOpen, parentID }: AddFieldProps) => {
                             <button
                                 key={option.type}
                                 onClick={() => {
-                                    addField(option.type, option.label, parentID);
+                                    const uniqueLabel = getUniqueLabel(option.label, fields,);
+                                    addField(option.type, uniqueLabel, parentID);
                                     setIsOpen(false);
                                 }}
                                 className="block w-full text-left px-3 py-2 hover:bg-green-900/20"

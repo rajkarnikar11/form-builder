@@ -58,7 +58,7 @@ const Inputs = ({ field, inputError, path }: { field: Field, inputError: Record<
         <div className='flex flex-col gap-1'>
             <label className='text-sm'>{field?.label} {field?.required ? <span className=' text-red-700' >*</span> : ''} </label>
             <input onBlur={handleBlur}
-                value={input ?? ''} onChange={(e) => handleChange(e?.target?.value)} className={` border rounded border-gray-200 p-1 ${error ? ' border-red-700 focus:outline-red-700 ' : ''} `} type={field?.type}></input>
+                value={input ?? ''} onChange={(e) => handleChange(e?.target?.value)} className={` border rounded bg-gray-50 border-gray-200 p-1 ${error ? ' border-red-700 focus:outline-red-700 ' : ''} `} type={field?.type}></input>
             {error && <span className=' text-xs text-red-700' >{error}</span>}
         </div>
     )
