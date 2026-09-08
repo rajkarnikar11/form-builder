@@ -20,8 +20,11 @@ const FormUI = () => {
 
         setError(validateAll(fields)?.errors)
         if (validateAll(fields)?.allValid) {
-            alert('Form submited succesfully');
-            console.log(getAllValues(), 'submitted succesfully!!!!!!!!!!!!')
+            alert(
+                'Form submitted successfully! 🎉\n\n' +
+                'Looks like we’re off to a good start — let’s work together! 🚀\n\n' +
+                JSON.stringify(fields, null, 2)
+            ); console.log(getAllValues(), 'submitted succesfully!!!!!!!!!!!!')
         }
 
 
