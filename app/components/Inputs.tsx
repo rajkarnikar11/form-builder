@@ -24,7 +24,7 @@ const Inputs = ({ field, inputError, path }: { field: Field, inputError: Record<
         return <div className='flex flex-col border mt-4 border-gray-200 p-4 rounded-lg relative gap-1'>
             <label className='text-sm absolute top-0 px-1  bg-[#FEFFFE] -translate-y-1/2'>{field?.label}</label>
             {field?.children?.map((item) => {
-                return <Inputs inputError={inputError} field={item} path={[...path, item.label]} />
+                return <Inputs key={item?.id} inputError={inputError} field={item} path={[...path, item.label]} />
             })}
         </div>
 

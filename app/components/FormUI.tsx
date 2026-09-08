@@ -35,7 +35,7 @@ const FormUI = () => {
             <div className='p-4 rounded-lg bg-teal-900/2 shadow-lg'>
                 <div className=' border flex flex-col gap-4 border-gray-200 rounded-lg p-4'>
                     {fields?.map((field: Field) => {
-                        return <Inputs inputError={error} path={[field.label]} field={field} />
+                        return <Inputs key={field?.id} inputError={error} path={[field.label]} field={field} />
                     })}
                 </div>
                 <div className=' flex justify-end mt-2'>
